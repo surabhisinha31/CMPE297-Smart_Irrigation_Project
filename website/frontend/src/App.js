@@ -8,7 +8,6 @@ class App extends Component {
     return (
       <BrowserRouter>
         <div>
-        
           <Main/>
         </div>
       </BrowserRouter>
