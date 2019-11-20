@@ -1,0 +1,23 @@
+{
+  "name": "soil_moisture",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "cors": "^2.8.4",
+    "express": "^4.14.1",
+    "express-session": "^1.17.0",
+    "mongodb": "^2.2.33",
+    "mongoose": "^5.7.8",
+    "mqtt": "^3.0.0",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
