@@ -4,12 +4,34 @@ const app = express();
 var http = require('http');
 var path = require("path");
 var nodemailer = require("nodemailer");
+var session = require("express-session");
+var cors = require("cors");
+var cookieParser = require("cookie-parser");
+
 const server = http.createServer(app);
 const WebSocket = require('ws');
 const webServer = new WebSocket.Server({ server });
 var { mongoose } = require("./db/mongoose");
 var { SoilMoisture } = require('./models/moisture');
+const url = "http://localhost:3000";
+var startValue = 0 ;
+
+app.use(cors({ origin: url, credentials: true }));
+
+app.use(function(req, res, next) {
+
+    res.setHeader('Access-Control-Allow-Origin', url);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT,DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
+    res.setHeader('Cache-Control', 'no-cache');
+    next();
+  });
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // SMTP setup for sending email to user
 var transport = nodemailer.createTransport({
@@ -33,6 +55,41 @@ app.get('/', function(req, res) {
 res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+//====================================GET TRACE DATA==========================================================
+
+app.post('/getTraceData/:ID', function (req,res,next) {
+  console.log("inside get graph trace data",req.params.ID);
+  var mydate = new Date().toISOString();
+  var query = req.params.ID;
+  console.log("Value of mydate: ", query);
+  var d = new Date();
+  d.setMonth(d.getMonth() - 1);
+  console.log("Value of d: ", d);
+  SoilMoisture.find({
+    "time": { $gte: query}
+  })
+  .exec()
+  .then(result => {
+    console.log("Response sent for time after fetching is : ", result);
+    // var largest = query;
+    // for(var i = 0 ; i < result.length ; i++) {
+    //   var timeValue = result[i].time;
+    //   var humidityValue = 0;
+    //   if(largest < timeValue) {
+    //     largest = timeValue;
+    //     humidityValue = result[i].humidity_level.split(',')[0];
+    //   }
+    // }
+    startValue++;
+    console.log("timeValue : " +startValue);
+    res.status(200).json({
+        message : "trace data fetched",
+        soilTraceDetails : startValue
+    });
+  });
+});
+//==============================================================================================
+
 // Email details
 
 const email = {
@@ -47,7 +104,10 @@ const email = {
 webServer.on('connection',function(ws,req){
     ws.on('message',function(message){
         console.log("Received sensor data: "+message);
-        var moisture = new SoilMoisture({ humidity_level : message });
+        var moisture = new SoilMoisture({
+          humidity_level : message,
+          time : Date.now()
+        });
         moisture.save(function (err) {
           if (err) return handleError(err)
         });
