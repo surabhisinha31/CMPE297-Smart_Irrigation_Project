@@ -6,6 +6,10 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
 class WeeklyReport extends Component {
+	constructor() {
+		super();
+		// window.location.reload(false);
+	}
 	render() {
 		const options = {
       animationEnabled: true,

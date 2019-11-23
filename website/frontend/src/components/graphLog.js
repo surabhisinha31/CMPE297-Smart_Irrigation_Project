@@ -32,10 +32,16 @@ class GraphLog extends Component {
     .then(response => {
       const xCoord = this.state.xCoord + 1;
       this.state.yCoord = response.data.soilTraceDetails;
-      this.state.humidityValue.push({x: xCoord,y: this.state.yCoord});
-      if (this.state.humidityValue.length >  10 ) {
-  			this.state.humidityValue.shift();
-  		}
+			console.log("this.state.yCoord : " +this.state.yCoord);
+			if(this.state.yCoord == undefined) {
+				this.state.yCoord = 1;
+			}
+			else {
+				this.state.humidityValue.push({x: xCoord,y: this.state.yCoord});
+	      if (this.state.humidityValue.length >  10 ) {
+	  			this.state.humidityValue.shift();
+	  		}
+			}
       this.setState({
         xCoord : xCoord
       })
@@ -47,7 +53,7 @@ class GraphLog extends Component {
 		const options = {
       animationEnabled: true,
 			exportEnabled: true,
-			theme: "dark1", // "light1", "dark1", "dark2"
+			theme: "light1", // "light1", "dark1", "dark2"
 			title:{
 				text: "Soil Humidity over Time"
 			},

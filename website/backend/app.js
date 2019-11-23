@@ -14,7 +14,7 @@ const webServer = new WebSocket.Server({ server });
 var { mongoose } = require("./db/mongoose");
 var { SoilMoisture } = require('./models/moisture');
 const url = "http://localhost:3000";
-var startValue = 0 ;
+// var startValue = 0 ;
 
 app.use(cors({ origin: url, credentials: true }));
 
@@ -71,20 +71,20 @@ app.post('/getTraceData/:ID', function (req,res,next) {
   .exec()
   .then(result => {
     console.log("Response sent for time after fetching is : ", result);
-    // var largest = query;
-    // for(var i = 0 ; i < result.length ; i++) {
-    //   var timeValue = result[i].time;
-    //   var humidityValue = 0;
-    //   if(largest < timeValue) {
-    //     largest = timeValue;
-    //     humidityValue = result[i].humidity_level.split(',')[0];
-    //   }
-    // }
-    startValue++;
-    console.log("timeValue : " +startValue);
+    var largest = query;
+    for(var i = 0 ; i < result.length ; i++) {
+      var timeValue = result[i].time;
+      var humidityValue = 0;
+      if(largest < timeValue) {
+        largest = timeValue;
+        humidityValue = result[i].humidity_level.split(',')[0];
+      }
+    }
+    // startValue++;
+    // console.log("timeValue : " +startValue);
     res.status(200).json({
         message : "trace data fetched",
-        soilTraceDetails : startValue
+        soilTraceDetails : parseInt(humidityValue, 10)
     });
   });
 });
@@ -96,7 +96,7 @@ const email = {
   from: 'iotproject@sjsu.com',
   to: 'shikhasurabhi3108@gmail.com',
   subject: 'Immediate Action Required',
-  text: 'Water level is going down. Please turn on the sprinkler.!!\n\n\nRegards, \nIOT Management Team'
+  text: 'Warning: Humidity level is low, plants might be at risk of dying. Please turn on the sprinkler.!!\n\n\nRegards, \nIOT Management Team'
 };
 
 // Web socket connection of server with ESP8266 Module
@@ -112,9 +112,11 @@ webServer.on('connection',function(ws,req){
           if (err) return handleError(err)
         });
         var split = message.split(" , ");
-        if(parseInt(split[0]) >= 800) {
+        if(parseInt(parseInt(split[0])) >= 800) {
+            sleep(10000).then(() => {
+            });
             var startTime = Date.now();
-            if(endTime == 0 || endTime - startTime >= 60) {
+            if(endTime == 0 || endTime - startTime >= 6000) {
                 transport.sendMail(email, function(err, info) {
                   if (err) {
                     console.log(err)
@@ -123,12 +125,18 @@ webServer.on('connection',function(ws,req){
                   }
                 });
             }
+            endTime = Date.now();
         }
-        endTime = Date.now();
   });
   ws.on('close', function(){
     console.log("lost connection with the ESP8266 Module");
   });
 console.log("ESP8266 module is connected");
 });
+
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+
 server.listen(3001);
