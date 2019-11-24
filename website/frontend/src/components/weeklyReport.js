@@ -30,13 +30,13 @@ class WeeklyReport extends Component {
 			},
 			data: [{
 				type: "column",
-				dataPoints : [{x: 1, y: 10},
-                      {x: 2, y: 18},
-                      {x: 3, y: 20},
-                      {x: 4, y: 16},
-                      {x: 5, y: 10},
-                      {x: 6, y: 13},
-                      {x: 7, y: 15},]
+				dataPoints : [{x: 1, y: 20},
+                      {x: 2, y: 23},
+                      {x: 3, y: 31},
+                      {x: 4, y: 22},
+                      {x: 5, y: 17},
+                      {x: 6, y: 27},
+                      {x: 7, y: 33},]
 			}]
 		}
 
@@ -64,10 +64,10 @@ class WeeklyReport extends Component {
 				toolTipContent: "{label}: <strong>{y}%</strong>",
 				indexLabel: "{y}%",
 				indexLabelPlacement: "inside",
-				dataPoints : [{y: 13, label: "Morning"},
-                      {y: 2, label: "Noon"},
-                      {y: 23, label: "Evening"},
-                      {y: 30, label: "Night"}]
+				dataPoints : [{y: 22, label: "Morning"},
+                      {y: 7, label: "Noon"},
+                      {y: 18, label: "Evening"},
+                      {y: 32, label: "Night"}]
 			}]
 		}
 		return (
