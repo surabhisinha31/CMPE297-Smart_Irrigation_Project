@@ -73,7 +73,7 @@ class Home extends Component {
                 optimal plant growth.
               </p>
             </div>
-            <Link to = '/graphLog' ><button
+            <Link to = '/weeklyReport' ><button
               className="btn btn-secondary col-md-6"
               style={{
                 background: "black",
@@ -87,7 +87,7 @@ class Home extends Component {
                 padding: "10px 10px"
               }}
             >
-            <span>View Analysis Per Day</span>
+            <span>View Weekly and Daily Analysis</span>
               <svg
                 fill="white"
                 version="1.1"
@@ -112,7 +112,7 @@ class Home extends Component {
                 </g>
               </svg>
             </button> </Link>
-            <Link to = '/weeklyReport' ><button
+            <Link to = '/graphLog' ><button
               className="btn btn-secondary col-md-6"
               style={{
                 background: "black",
